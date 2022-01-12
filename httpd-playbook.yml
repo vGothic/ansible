@@ -1,0 +1,28 @@
+---
+- name Install Apache and installing web page
+  hosts: centos
+  become: yes
+
+
+  vars:
+    source_file: ./index.html
+    destin_file: /var/www/html
+
+
+  tasks:
+   - name: install Apache Web Server
+     yum: name=httpd state=latest
+
+
+  - name: copy demo page to server
+    copy: src={{ source_file }} dest={{ destin_file }} mode=0555
+
+  
+  - name: Start Webserver and make it enable on boot
+    service: name=httpd state=started enabled=yes
+
+
+  handlers:
+  - name: Restart Apache
+    service: name=httpd state=restarted
+
