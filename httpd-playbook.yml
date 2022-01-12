@@ -1,8 +1,10 @@
 ---
-- name Install Apache and installing web page
-  hosts: centos
+- name: Install Apache and installing web page
+  hosts: all
   become: yes
-
+  #user: root
+  #  become_method: sudo
+  #become_user: root
 
   vars:
     source_file: ./index.html
@@ -10,19 +12,36 @@
 
 
   tasks:
-   - name: install Apache Web Server
-     yum: name=httpd state=latest
-
+  - name: install Apache Web Server
+    yum: name=httpd state=latest
 
   - name: copy demo page to server
     copy: src={{ source_file }} dest={{ destin_file }} mode=0555
-
   
   - name: Start Webserver and make it enable on boot
     service: name=httpd state=started enabled=yes
 
 
+  - name: checking firewalld 
+    service:
+      name: firewalld
+      state: started
+      enabled: yes
+
+  - name: enabling 80 port
+    firewalld:
+      zone: public
+      port: 80/tcp
+      permanent: true
+      state: enabled
+    become: yes
+    
   handlers:
   - name: Restart Apache
     service: name=httpd state=restarted
+
+
+  - name: Restart firewalld
+    service: name=firewalld state=restarted
+
 
