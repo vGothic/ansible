@@ -1,0 +1,5 @@
+[centos]
+centos_01  ansible_host=10.10.1.6 ansible_user=goth ansible_ssh_private_key=/home/goth/.ssh/id_rsa
+
+
+
