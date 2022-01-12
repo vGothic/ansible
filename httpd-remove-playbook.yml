@@ -1,0 +1,33 @@
+---
+- name: Deinstall Apache and removing web page
+  hosts: all
+  become: yes
+
+
+  tasks:
+  - name: deinstall Apache Web Server
+    yum: name=httpd state=absent
+
+  - name: remove web page
+    file: path='/var/www/html/index.html' state=absent
+
+  - name: checking firewalld 
+    service:
+      name: firewalld
+      state: started
+      enabled: yes
+
+  - name: disabling 80 port
+    firewalld:
+      zone: public
+      port: 80/tcp
+      permanent: true
+      state: disabled
+    become: yes
+    notify:
+      - Restart firewalld
+    
+  - name: Restart firewalld
+    service: name=firewalld state=reloaded
+
+
