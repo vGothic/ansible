@@ -1,0 +1,22 @@
+---
+- name: Modify grub
+  hosts: all
+  become: yes
+
+  vars:
+    grub: 'net.ifnames=0 biosdevname=0"'
+
+  
+   
+
+  tasks:
+  - name: edit grub
+    lineinfile:    
+      path: /etc/default/grub
+      backrefs: yes
+      backup: yes
+      regexp: '^(GRUB_CMDLINE_LINUX.+(?=.))'
+      line: '\1 {{ grub }}'
+    
+ 
+ #  ^.+(?=.) 
