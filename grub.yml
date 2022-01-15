@@ -5,7 +5,6 @@
 
   vars:
     grub: 'net.ifnames=0 biosdevname=0"'
-
   
    
 
@@ -17,6 +16,9 @@
       backup: yes
       regexp: '^(GRUB_CMDLINE_LINUX.+(?=.))'
       line: '\1 {{ grub }}'
-    
+    notify:
+      - Apply changes
+
+  handlers:
+  - name: Apply changes
  
- #  ^.+(?=.) 
