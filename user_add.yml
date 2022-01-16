@@ -1,0 +1,21 @@
+---
+- name: Add Some users into linux
+  hosts: all
+  become: yes
+
+  vars:
+    username: [Alice, Bob, Carol]
+#    password: "zzz"
+  vars_files:
+    - pass.yml
+
+  tasks: 
+  - name: create users
+    user:
+      name: "{{ item }}"
+      state: present
+      comment: '{{ item }}@example.com({{ password }})'
+      password: "{{ password | password_hash('sha512') }}"
+      create_home: true
+    loop: "{{ username }}"
+
