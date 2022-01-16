@@ -16,5 +16,6 @@
       comment: '{{ item }}@example.com'
       password: "{{ password | password_hash('sha512') }}"
       create_home: true
+      update_password: on_create
     loop: "{{ username }}"
 
