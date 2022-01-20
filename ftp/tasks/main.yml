@@ -1,0 +1,40 @@
+---
+- name: Installing FTP server
+  yum: name=vsftpd state=latest
+
+- name: installing SElinux support for python
+  dnf: 
+    name: '{{ item }}'
+    state: latest
+  loop: 
+    - 'python3-policycoreutils'
+    - 'python3-libselinux' 
+  when: ansible_facts['os_family'] == "RedHat"
+
+- name: Start ftp service
+  service: name=vsftpd state=started enabled=yes
+
+- name: enabling ftp access throgh firewall
+  firewalld: 
+    zone: public
+    service: ftp
+    permanent: yes
+    state: enabled
+  become: yes
+  notify:
+    - Restart firewall
+
+- name: creating ftp config file
+  template: src=vsftpd.conf.j2 dest=/etc/vsftpd/vsftpd.conf mode=0600
+  notify: restart ftpd
+
+- name: creating upload folder
+  file: 
+    path: '{{ ftp_pub_upload }}'
+    state: directory
+    mode: '0777'
+
+- name: SELinux configure
+  seboolean:
+    name: ftpd_anon_write
+    state: on

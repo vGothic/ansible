@@ -1,2 +1,30 @@
 ---
-# tasks file for httpd_web
+# tasks file for httpd_we
+
+- name: install Apache Web Server
+  yum: name=httpd state=latest
+
+- name: Generate http demo page
+  template: src=index.j2 dest={{ destin_folder }}/index.html mode=0555
+  notify: Restart Apache
+
+- name: Start Webserver and make it enable on boot
+  service: name=httpd state=started enabled=yes
+
+- name: checking firewalld
+  service:
+    name: firewalld
+    state: started
+    enabled: yes
+
+- name: enabling 80 port
+  firewalld:
+    zone: public
+    port: 80/tcp
+    permanent: true
+    state: enabled
+  become: yes
+  notify:
+    - Restart firewalld
+
+

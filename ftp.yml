@@ -1,0 +1,8 @@
+---
+
+- name: Install Apache and upload web page
+  hosts: all
+  become: yes
+
+  roles: 
+   - ftp

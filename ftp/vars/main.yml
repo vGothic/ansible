@@ -1,0 +1,6 @@
+---
+# vIars file for ftp
+ftp_pub_root: /var/ftp/pub
+ftp_pub_upload: /var/ftp/pub/upload
+
+#

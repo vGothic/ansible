@@ -5,20 +5,30 @@
 
   vars:
     grub: 'net.ifnames=0 biosdevname=0"'
-  
+    path: /etc/default/grub
    
 
   tasks:
+  - name: checking grub
+    command: cat /home/goth/grub |grep "net.ifnames=0 biosdevname=0" -o
+    register: out
+    ignore_errors: yes
+    
   - name: edit grub
     lineinfile:    
-      path: /etc/default/grub
+      path: /home/goth/grub
       backrefs: yes
       backup: yes
       regexp: '^(GRUB_CMDLINE_LINUX.+(?=.))'
       line: '\1 {{ grub }}'
+    check_mode: yes
     notify:
       - Apply changes
 
+  - debug:
+      var: out
+  
   handlers:
   - name: Apply changes
- 
+    command: grub2-mkconfig 
+
